@@ -5,14 +5,25 @@
 using namespace v8;
 
 Handle<Value> Transfer(const Arguments& args) {
-#if !!NODE_VERSION_AT_LEAST(0, 11, 0)
+#if NODE_VERSION_AT_LEAST(0, 11, 0)
     Isolate* isolate = Isolate::GetCurrent();
     HandleScope scope(isolate);
 #else
+#define isolate
     HandleScope scope;
 #endif
+    
     // (fd, speed, mode, order, writebuf, readcount, cb)
-    return scope.Close(String::New("Hello, World."));
+    
+    // TODO: implement using SPI_IOC_MESSAGE
+    // see https://raw.github.com/torvalds/linux/master/Documentation/spi/spidev_test.c
+    
+    Local<Function> cb = Local<Function>::Cast(args[6]);
+    const unsigned argc = 1;
+    Local<Value> argv[argc] = { Local<Value>::New(Exception::Error(String::New("Not implemented"))) };
+    cb->Call(Context::GetCurrent()->Global(), argc, argv);
+    
+    return scope.Close(Undefined(isolate));
 }
 
 void init(Handle<Object> exports) {

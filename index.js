@@ -1,10 +1,5 @@
 var fs = require('fs'),
-    _spi = require("./build/Release/spi_binding"),
-    // TODO: implement this bit in binding using SPI_IOC_MESSAGE
-    cpp_transfer = function (fd, speed, mode, order, writebuf, readcount, cb) {
-        // see https://raw.github.com/torvalds/linux/master/Documentation/spi/spidev_test.c
-        cb(new Error("Not implemented"));
-    };
+    _spi = require("./build/Release/spi_binding");
 
 exports.initialize = function (dev) {
     
@@ -35,7 +30,7 @@ exports.initialize = function (dev) {
             cb(e,d);
         });
         xfr[0] = _fd;
-        cpp_transfer.apply(null, xfr);   
+        _spi.transfer.apply(null, xfr);   
     }
     
     fs.open(dev, 'r+', function (e, fd) {
