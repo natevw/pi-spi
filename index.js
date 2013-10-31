@@ -4,7 +4,7 @@ var fs = require('fs'),
 exports.initialize = function (dev) {
     
     var spi = {},
-        _fd = null,
+        _fd = null, _fd_err = null,
         _speed = 4e6,
         _mode = null,
         _order = 0;
@@ -17,6 +17,12 @@ exports.initialize = function (dev) {
         _nudge_queue();
     }
     function _nudge_queue() {
+        if (_fd_err) {
+            _transfer_queue.forEach(function (xfr) {
+                xfr.pop()(_fd_err);
+            });
+            _transfer_queue.length = 0;
+        }
         if (!_fd) return;
         if (!_transfer_queue.length) return;
         if (_transfer_queue.processing) return;
@@ -34,7 +40,8 @@ exports.initialize = function (dev) {
     }
     
     fs.open(dev, 'r+', function (e, fd) {
-        _fd = fd;
+        if (e) _fd_err = e;
+        else _fd = fd;
         _nudge_queue();
     });
     
