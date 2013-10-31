@@ -1,4 +1,5 @@
 var fs = require('fs'),
+    _spi = require("./build/Release/spi_binding"),
     // TODO: implement this bit in binding using SPI_IOC_MESSAGE
     cpp_transfer = function (fd, speed, mode, order, writebuf, readcount, cb) {
         // see https://raw.github.com/torvalds/linux/master/Documentation/spi/spidev_test.c
