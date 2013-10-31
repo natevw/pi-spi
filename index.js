@@ -36,7 +36,7 @@ exports.initialize = function (dev) {
     fs.open(dev, 'r+', function (e, fd) {
         _fd = fd;
         _nudge_queue();
-    }
+    });
     
     spi.clockSpeed = function (speed) {
         if (arguments.length < 1) return _speed;
