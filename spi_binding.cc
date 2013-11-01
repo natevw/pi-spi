@@ -2,8 +2,9 @@
 #include <node_version.h>
 #include <node_buffer.h>
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <cerrno>
 
 
