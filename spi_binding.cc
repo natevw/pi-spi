@@ -4,6 +4,24 @@
 
 using namespace v8;
 
+
+// HT http://kkaefer.github.io/node-cpp-modules/#calling-async
+struct Baton {
+    uv_work_t request;
+    Persistent<Function> callback;
+    int result;
+    int errno;
+    
+    int fd;
+    uint32_t speed;
+    uint8_t mode;
+    uint8_t order;
+    uint32_t buflen;
+    uint8_t buffer[0];      // allocated larger
+};
+
+
+
 Handle<Value> Transfer(const Arguments& args) {
 #if NODE_VERSION_AT_LEAST(0, 11, 0)
     Isolate* isolate = Isolate::GetCurrent();
@@ -19,31 +37,40 @@ Handle<Value> Transfer(const Arguments& args) {
     assert(args[1]->IsNumber());
     assert(args[2]->IsNumber());
     assert(args[3]->IsNumber());
-    assert(node::Buffer::HasInstance(args[4]) || args[4]->IsNull());
+    assert(args[4]->IsNull() || node::Buffer::HasInstance(args[4]));
     assert(args[5]->IsNumber());
     assert(args[6]->IsFunction());
     
-    int fd = args[0]->ToInt32()->Value();
-    uint32_t speed = args[1]->ToUint32()->Value();
-    uint8_t mode = args[2]->ToUint32()->Value();
-    uint8_t order = args[3]->ToUint32()->Value();
-    printf("fd: %i, speed: %u, mode: %i, order: %i\n", fd, speed, mode, order);
+    uint32_t readcount = args[5]->ToUint32()->Value();
     
-    /*
-    Local<Object> writebuf = args[4]->ToObject();
-    node::Buffer::Data(writebuf);
-    */
+    size_t writelen;
+    char* writedata;
+    if (args[4]->IsObject()) {
+        Local<Object> writebuf = args[4]->ToObject();
+        writelen = node::Buffer::Length(writebuf);
+        assert(writelen <= 0xffffffff /*std::numeric_limits<T>::max()*/);
+        writedata = node::Buffer::Data(writebuf);
+    } else {
+        writelen = 0;
+        writedata = NULL;
+    }
     
-    // TODO: implement using SPI_IOC_MESSAGE
+    uint32_t buflen = (readcount > writelen) ? readcount : writelen /* std::max(readcount,writelen) */;
+    
+    Baton* baton = (Baton*)new uint8_t[sizeof(Baton)+buflen];
+    baton->fd = args[0]->ToInt32()->Value();
+    baton->speed = args[1]->ToUint32()->Value();
+    baton->mode = args[2]->ToUint32()->Value();
+    baton->order = args[3]->ToUint32()->Value();
+    baton->buflen = buflen;
+    if (writelen) memcpy(baton->buffer, writedata, writelen);
+    printf("fd: %i, speed: %u, mode: %i, order: %i\n", baton->fd, baton->speed, baton->mode, baton->order);
+    printf("writelen: %lu, readcount: %u, buflen=%u\n", writelen, readcount, buflen);
+    
+    // TODO: this should be in uv_work_cb, guarded by a mutex
     // see https://raw.github.com/torvalds/linux/master/Documentation/spi/spidev_test.c
     // http://lxr.free-electrons.com/source/include/uapi/linux/spi/spidev.h#L53
     // https://www.kernel.org/doc/Documentation/spi/spidev
-    
-    
-    size_t len = 0;
-    (void)len;
-    
-    // TODO: this should be in uv_work_cb, guarded by a mutex
     /*
     int ret = 0;
     ret = ioctl(fd, SPI_IOC_WR_MODE, &mode);
@@ -56,6 +83,7 @@ Handle<Value> Transfer(const Arguments& args) {
 	};
     ret = ioctl(fd, SPI_IOC_MESSAGE(1), &msg);
     */
+    
     
     // TODO: this should be in uv_work_cb_after
     Local<Function> cb = Local<Function>::Cast(args[6]);
