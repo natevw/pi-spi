@@ -7,6 +7,11 @@
 #include <cstring>
 #include <cerrno>
 
+#if __linux__
+#include <sys/ioctl.h>
+#include <linux/spi/spidev.h>
+#endif
+
 
 using namespace v8;
 
