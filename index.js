@@ -6,7 +6,7 @@ exports.initialize = function (dev) {
     var spi = {},
         _fd = null, _fd_err = null,
         _speed = 4e6,
-        _mode = null,
+        _mode = 0,
         _order = 0;
     
     // WORKAROUND: this simplifies compatibility with [REDACTED]'s sync initialize
