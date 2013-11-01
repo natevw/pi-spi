@@ -46,6 +46,12 @@ void _Transfer(uv_work_t* req) {
                 /*.rx_buf = */ (uintptr_t)baton->buffer,
                 /*.len = */ baton->buflen,
                 /*.speed_hz = */ baton->speed,
+                
+                // avoid missing initializer warnings…
+                /*.delay_usecs = */ 0,
+                /*.bits_per_word = */ 0,
+                /*.cs_change = */ 0,
+                /*.pad = */ 0,
             };
             ret = ioctl(baton->fd, SPI_IOC_MESSAGE(1), &msg);
         }
