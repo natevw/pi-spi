@@ -42,10 +42,10 @@ void _Transfer(uv_work_t* req) {
         ret = ioctl(baton->fd, SPI_IOC_WR_LSB_FIRST, &baton->order);
         if (ret != -1) {
             struct spi_ioc_transfer msg = {
-                .tx_buf = (uintptr_t)baton->buffer,
-                .rx_buf = (uintptr_t)baton->buffer,
-                .len = baton->buflen,
-                .speed_hz = baton->speed,
+                /*.tx_buf = */ (uintptr_t)baton->buffer,
+                /*.rx_buf = */ (uintptr_t)baton->buffer,
+                /*.len = */ baton->buflen,
+                /*.speed_hz = */ baton->speed,
             };
             ret = ioctl(baton->fd, SPI_IOC_MESSAGE(1), &msg);
         }
