@@ -37,9 +37,9 @@ void _Transfer(uv_work_t* req) {
     int ret = 0;
 #ifdef SPI_IOC_MESSAGE
     uv_mutex_lock(&spiAccess);
-    ret = ioctl(fd, SPI_IOC_WR_MODE, &baton->mode);
+    ret = ioctl(baton->fd, SPI_IOC_WR_MODE, &baton->mode);
     if (ret != -1) {
-        ret = ioctl(fd, SPI_IOC_WR_LSB_FIRST, &baton->order);
+        ret = ioctl(baton->fd, SPI_IOC_WR_LSB_FIRST, &baton->order);
         if (ret != -1) {
             struct spi_ioc_transfer msg = {
                 .tx_buf = (uintptr_t)baton->buffer,
@@ -47,11 +47,12 @@ void _Transfer(uv_work_t* req) {
                 .len = baton->buflen,
                 .speed_hz = baton->speed,
             };
-            ret = ioctl(fd, SPI_IOC_MESSAGE(1), &msg);
+            ret = ioctl(baton->fd, SPI_IOC_MESSAGE(1), &msg);
         }
     }
     uv_mutex_unlock(&spiAccess);
 #else
+#warning "Building without SPI support"
     ret = -1;
     errno = ENOSYS;
 #endif
