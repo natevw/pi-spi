@@ -1,13 +1,23 @@
 var fs = require('fs'),
     _spi = require("./build/Release/spi_binding");
 
+exports.mode = {
+    CPHA: 0x01,
+    CPOL: 0x02
+};
+
+exports.order = {
+    MSB_FIRST: 0,
+    LSB_FIRST: 1
+};
+
 exports.initialize = function (dev) {
     
     var spi = {},
         _fd = fs.openSync(dev, 'r+'),
         _speed = 4e6,
         _mode = 0,
-        _order = 0;
+        _order = exports.order.MSB_FIRST;
     
     spi.clockSpeed = function (speed) {
         if (arguments.length < 1) return _speed;
@@ -38,4 +48,6 @@ exports.initialize = function (dev) {
     };
     
     return spi;
-}
+};
+
+

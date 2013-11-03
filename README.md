@@ -39,21 +39,17 @@ Probably requires running node under `sudo` for SPI permissions, unless you've u
 
 ### spi.clockSpeed([speed])
 
-Sets (or gets, if no argument provided) the clock speed in Hz. The Pi only supports [powers of 2 speeds](https://projects.drogon.net/understanding-spi-on-the-raspberry-pi/) and faster speeds might get derated a bit.
-
-`TBD: constants for supported speeds`
+Sets (or gets, if no argument provided) the clock speed in Hz. Defaults to `4e6`, i.e. 4MHz. The Pi only supports [powers of 2 speeds](https://projects.drogon.net/understanding-spi-on-the-raspberry-pi/) and faster speeds might get derated a bit.
 
 ### spi.dataMode([mode])
 
-Sets (or gets, if no argument provided) the data mode which is *mumble mumble*.
-
-`TBD: clarify and add OR-able flag constants`
+Sets (or gets, if no argument provided) the "data mode" (clock phase and polarity) to e.g. `SPI.mode.CPHA | SPI.mode.CPOL`. Default is no flags.
 
 ### spi.bitOrder([order])
 
-Sets (or gets, if no argument provided) the bit (not byte!) ordering. (I think any non-zero integer will flip it to least-significant-bit first but don't quote me on that.)
+Sets (or gets, if no argument provided) the bit ordering. Default is `SPI.order.MSB_FIRST` or you can set `SPI.order.LSB_FIRST`.
 
-`TBD: clarify and add constants`
+Note that this is **bit** ordering, not *bytes* — byte ordering is up to your application.
 
 ### spi.transfer(outbuffer, incount, cb)
 
@@ -80,6 +76,29 @@ This library is subject to change as it is intended for compatibility with `$som
 
 ## License
 
-© 2013 Nathan Vander Wilt.
+Copyright © 2013, Nathan Vander Wilt.
+All rights reserved.
 
-`TBD: insert BSD-2-Clause text here`
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met: 
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer. 
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution. 
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies, 
+either expressed or implied, of the FreeBSD Project.
