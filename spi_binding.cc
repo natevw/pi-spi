@@ -52,7 +52,7 @@ void _Transfer(uv_work_t* req) {
                 /*.len = */ baton->buflen,
                 /*.speed_hz = */ baton->speed,
                 
-                // avoid missing initializer warnings…
+                // avoid "missing initializer" warnings…
                 /*.delay_usecs = */ 0,
                 /*.bits_per_word = */ 0,
                 /*.cs_change = */ 0,
