@@ -157,6 +157,7 @@ Handle<Value> Transfer(const Arguments& args) {
     baton->readcount = readcount;
     baton->buflen = buflen;
     if (writelen) memcpy(baton->buffer, writedata, writelen);
+    if (readcount > writelen) memset(baton->buffer+writelen, 0, readcount-writelen);
     //printf("fd: %i, speed: %u, mode: %i, order: %i\n", baton->fd, baton->speed, baton->mode, baton->order);
     //printf("writelen: %u, readcount: %u, buflen=%u\n", (uint32_t)writelen, readcount, buflen);
     
