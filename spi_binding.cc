@@ -94,14 +94,20 @@ void Finish_Transfer(uv_work_t* req, int status) {
         Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));       // …which we wrap.
         // TODO: it looks like handle_ might go away soon.
         // c.f. https://groups.google.com/d/msg/nodejs/GmHqobrM_TA/SaaP3oHVFCoJ for lead on this and other 0.11.x changes
-        d = bufferConstructor->NewInstance(3, (Handle<Value>[]){b->handle_, Integer::New(baton->readcount), Integer::New(0)});
+        Handle<Value> v[] = {b->handle_, Integer::New(baton->readcount), Integer::New(0)};
+        d = bufferConstructor->NewInstance(3, v);
     } else {
         d = Local<Value>::New(Null());
     }
     
     TryCatch try_catch;
-    if (0 && baton->err) baton->callback->Call(Context::GetCurrent()->Global(), 1, (Local<Value>[]){e});
-    else baton->callback->Call(Context::GetCurrent()->Global(), 2, (Local<Value>[]){e,d});
+    if (0 && baton->err) {
+        Local<Value> v[] = {e};
+        baton->callback->Call(Context::GetCurrent()->Global(), 1, v);
+    } else {
+        Local<Value> v[] = {e,d};
+        baton->callback->Call(Context::GetCurrent()->Global(), 2, v);
+    }
     baton->callback.Dispose();
     delete[] baton;
     
