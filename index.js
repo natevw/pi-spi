@@ -46,6 +46,9 @@ exports.initialize = function (dev) {
     spi.transfer = function (writebuf, readcount, cb) {
         _transfer(writebuf, readcount, cb);
     };
+    spi.close = function () {
+        fs.close( _fd );
+    };
     
     return spi;
 };
