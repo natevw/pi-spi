@@ -1,6 +1,6 @@
 {
   "name": "pi-spi",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "Simple async SPI library for Raspberry Pi",
   "main": "index.js",
   "scripts": {
