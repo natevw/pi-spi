@@ -5,7 +5,7 @@ Simple asyncronous node.js SPI library for Raspberry Pi (and likely other embedd
 
 ## Example
 
-`npm install pi-pi`
+`npm install pi-spi`
 
 
 ```
