@@ -66,14 +66,6 @@ Writes outbuffer, ignoring response bytes.
 Note that if there was an error opening the device, the `transfer`/`read`/`write` calls will fail each time called. I may [revise the initialize method](https://github.com/natevw/pi-spi/issues/2#issuecomment-27588982) so to allow you to handle the error better.
 
 
-
-## Compatibility Note
-
-This library is subject to change as it is intended for compatibility with `$somethingElse`.
-
-`TBD: more details when public`
-
-
 ## License
 
 Copyright © 2013, Nathan Vander Wilt.
