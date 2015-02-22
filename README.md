@@ -51,9 +51,9 @@ Sets (or gets, if no argument provided) the bit ordering. Default is `SPI.order.
 
 Note that this is **bit** ordering, not *bytes* — byte ordering is up to your application.
 
-### spi.transfer(outbuffer, incount, cb)
+### spi.transfer(outbuffer, [incount,] cb)
 
-Transfers data for the longer of `outbuffer.length` or `incount` bytes. If successfully, the second parameter to your callback will be a buffer of length `incount`.
+Transfers data for the longer of `outbuffer.length` or `incount` bytes. If successfully, the second parameter to your callback will be a buffer of length `incount` (which defaults to `outbuffer.length` if not provided).
 
 ### spi.read(incount, cb)
 

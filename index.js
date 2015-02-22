@@ -51,7 +51,10 @@ exports.initialize = function (dev) {
     };
     spi.transfer = function (writebuf, readcount, cb) {
         if (!Buffer.isBuffer(writebuf)) throw TypeError("Write data is not a buffer");
-        if (typeof readcount !== 'number') throw TypeError("Read count is not a number");
+        if (typeof readcount === 'function') {
+            cb = readcount;
+            readcount = writebuf.length;
+        } else if (typeof readcount !== 'number') throw TypeError("Read count is not a number");
         if (typeof cb !== 'function') throw TypeError("Callback not provided");
         _transfer(writebuf, readcount, cb);
     };
