@@ -71,7 +71,11 @@ class SpiTransfer : public NanAsyncWorker {
           }
           uv_mutex_unlock(&spiAccess);
       #else
-      #warning "Building without SPI support"
+        #ifdef __GNUC__
+          #warning "Building without SPI support"
+        #else
+          #pragma message "Building without SPI support"
+        #endif
           (void)fd;
           (void)speed;
           (void)mode;
