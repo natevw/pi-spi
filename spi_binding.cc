@@ -94,10 +94,9 @@ class SpiTransfer : public NanAsyncWorker {
         
         Local<Value> e;
         if (err) {
-            char* msg;
-            asprintf(&msg, "SPI error: %s (errno %i)", strerror(err), err);
+            char msg[1024];
+            snprintf(msg, sizeof(msg), "SPI error: %s (errno %i)", strerror(err), err);
             e = NanError(msg);
-            free(msg);
         } else {
             e = NanNull();
         }
