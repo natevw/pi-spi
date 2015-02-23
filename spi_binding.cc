@@ -74,7 +74,7 @@ class SpiTransfer : public NanAsyncWorker {
         #ifdef __GNUC__
           #warning "Building without SPI support"
         #else
-          #pragma message "Building without SPI support"
+          #pragma message("Building without SPI support")
         #endif
           (void)fd;
           (void)speed;
