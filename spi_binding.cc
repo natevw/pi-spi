@@ -6,6 +6,10 @@
 #include <cstring>
 #include <cerrno>
 
+#ifdef WIN32      // this substitution should work since we're not using return value…
+#define snprintf(a,b,...) _snprintf_s(a,b,_TRUNCATE,__VA_ARGS__)
+#endif
+
 #if __linux__
 #include <sys/ioctl.h>
 #include <linux/spi/spidev.h>
