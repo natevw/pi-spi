@@ -36,7 +36,7 @@ exports.initialize = function (dev) {
     
     
     function _transfer(w,r,cb) {
-        _spi.transfer(_fd, _speed, _mode, _order, w, r, cb);
+        _spi.Transfer(_fd, _speed, _mode, _order, w, r, cb);
     }
     
     spi.write = function (writebuf, cb) {

@@ -20,6 +20,6 @@
     "url": "https://github.com/natevw/pi-spi/issues"
   },
   "dependencies": {
-    "nan": "^1.6.2"
+    "nan": "^2.1.0"
   }
 }

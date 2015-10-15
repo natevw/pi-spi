@@ -20,10 +20,10 @@ using namespace v8;
 
 uv_mutex_t spiAccess;
 
-class SpiTransfer : public NanAsyncWorker {
+class SpiTransfer : public Nan::AsyncWorker {
   public:
-      SpiTransfer(NanCallback *cb, int fd, uint32_t speed, uint8_t mode, uint8_t order, v8::Handle<v8::Value> _writebuf, size_t readcount) :
-        NanAsyncWorker(cb), fd(fd), speed(speed), mode(mode), order(order), readcount(readcount)
+      SpiTransfer(Nan::Callback *cb, int fd, uint32_t speed, uint8_t mode, uint8_t order, v8::Handle<v8::Value> _writebuf, size_t readcount) :
+        Nan::AsyncWorker(cb), fd(fd), speed(speed), mode(mode), order(order), readcount(readcount)
       {
           size_t writelen;
           char* writedata;
@@ -94,25 +94,25 @@ class SpiTransfer : public NanAsyncWorker {
     }
       
     void HandleOKCallback () {
-        NanScope();
+        Nan::HandleScope();
         
         Local<Value> e;
         if (err) {
             char msg[1024];
             snprintf(msg, sizeof(msg), "SPI error: %s (errno %i)", strerror(err), err);
-            e = NanError(msg);
+            e = Nan::Error(msg);
         } else {
-            e = NanNull();
+            e = Nan::Null();
         }
         
         Local<Value> d;
         if (!err && readcount) {
-            d = NanNewBufferHandle((const char*)buffer, readcount);
+            d = Nan::NewBuffer((char*)buffer, readcount).ToLocalChecked();
         } else {
-            d = NanNull();
+            d = Nan::Null();
         }
         
-        TryCatch try_catch;
+        Nan::TryCatch try_catch;
         if (0 && err) {
             Local<Value> v[] = {e};
             callback->Call(1, v);
@@ -122,7 +122,7 @@ class SpiTransfer : public NanAsyncWorker {
         }
         
         if (try_catch.HasCaught()) {
-            node::FatalException(try_catch);
+            Nan::FatalException(try_catch);
         }
     };
     
@@ -139,36 +139,30 @@ class SpiTransfer : public NanAsyncWorker {
 };
 
 NAN_METHOD(Transfer) {
-    NanScope();
-    
     // (fd, speed, mode, order, writebuf, readcount, cb)
-    assert(args.Length() == 7);
-    assert(args[0]->IsNumber());
-    assert(args[1]->IsNumber());
-    assert(args[2]->IsNumber());
-    assert(args[3]->IsNumber());
-    assert(args[4]->IsNull() || node::Buffer::HasInstance(args[4]));
-    assert(args[5]->IsNumber());
-    assert(args[6]->IsFunction());
+    assert(info.Length() == 7);
+    assert(info[0]->IsNumber());
+    assert(info[1]->IsNumber());
+    assert(info[2]->IsNumber());
+    assert(info[3]->IsNumber());
+    assert(info[4]->IsNull() || node::Buffer::HasInstance(info[4]));
+    assert(info[5]->IsNumber());
+    assert(info[6]->IsFunction());
     
-    int fd = args[0]->Int32Value();
-    uint32_t speed = args[1]->Uint32Value();
-    uint8_t mode = args[2]->Uint32Value();
-    uint8_t order = args[3]->Uint32Value();
-    v8::Handle<v8::Value> writebuf = args[4];
-    size_t readcount = args[5]->Uint32Value();
-    NanCallback* cb = new NanCallback(args[6].As<Function>());
+    int fd = info[0]->Int32Value();
+    uint32_t speed = info[1]->Uint32Value();
+    uint8_t mode = info[2]->Uint32Value();
+    uint8_t order = info[3]->Uint32Value();
+    v8::Handle<v8::Value> writebuf = info[4];
+    size_t readcount = info[5]->Uint32Value();
+    Nan::Callback* cb = new Nan::Callback(info[6].As<Function>());
     
-    NanAsyncQueueWorker(new SpiTransfer(cb, fd, speed, mode, order, writebuf, readcount));
-    NanReturnUndefined();
+    Nan::AsyncQueueWorker(new SpiTransfer(cb, fd, speed, mode, order, writebuf, readcount));
 }
 
-void InitAll(Handle<Object> exports) {
+NAN_MODULE_INIT(InitAll) {
     uv_mutex_init(&spiAccess);      // no matching `uv_mutex_destroy` but there's no module deinit…
-    exports->Set(
-        NanNew<String>("transfer"),
-        NanNew<FunctionTemplate>(Transfer)->GetFunction()
-    );
+    NAN_EXPORT(target, Transfer);
 }
 
 NODE_MODULE(spi_binding, InitAll)
