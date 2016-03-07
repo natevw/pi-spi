@@ -68,6 +68,8 @@ class SpiTransfer : public Nan::AsyncWorker {
                       /*.delay_usecs = */ 0,
                       /*.bits_per_word = */ 0,
                       /*.cs_change = */ 0,
+                      /*.tx_nbits = */ 0,
+                      /*.rx_nbits = */ 0, 
                       /*.pad = */ 0,
                   };
                   ret = ioctl(fd, SPI_IOC_MESSAGE(1), &msg);
