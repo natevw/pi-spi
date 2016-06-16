@@ -58,18 +58,11 @@ class SpiTransfer : public Nan::AsyncWorker {
           if (ret != -1) {
               ret = ioctl(fd, SPI_IOC_WR_LSB_FIRST, &order);
               if (ret != -1) {
-                  struct spi_ioc_transfer msg = {
-                      /*.tx_buf = */ (uintptr_t)buffer,
-                      /*.rx_buf = */ (uintptr_t)buffer,
-                      /*.len = */ buflen,
-                      /*.speed_hz = */ speed,
-                      
-                      // avoid "missing initializer" warnings…
-                      /*.delay_usecs = */ 0,
-                      /*.bits_per_word = */ 0,
-                      /*.cs_change = */ 0,
-                      /*.pad = */ 0,
-                  };
+                  struct spi_ioc_transfer msg = {};
+                  msg.tx_buf = buffer;
+                  msg.rx_buf = buffer;
+                  msg.len = buflen;
+                  msg.speed_hz = speed;
                   ret = ioctl(fd, SPI_IOC_MESSAGE(1), &msg);
               }
           }
