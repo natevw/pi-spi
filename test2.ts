@@ -1,4 +1,4 @@
-/// <reference path="./pi-spi.d.ts" />
+/// <reference path="./typings/pi-spi/pi-spi.d.ts" />
 
 import * as pispi from 'pi-spi';
 

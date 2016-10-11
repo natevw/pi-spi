@@ -1,4 +1,4 @@
-/// <reference path="./node.d.ts" />
+/// <reference path="../node/node.d.ts" />
 
 declare module 'pi-spi' {
   enum mode {
