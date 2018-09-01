@@ -102,6 +102,7 @@ class SpiTransfer : public Nan::AsyncWorker {
         if (!err && readcount) {
             d = Nan::NewBuffer((char*)buffer, readcount).ToLocalChecked();
         } else {
+            free(buffer);
             d = Nan::Null();
         }
         
