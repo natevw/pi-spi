@@ -105,6 +105,7 @@ class SpiTransfer : public Nan::AsyncWorker {
             d = Nan::NewBuffer((char*)buffer, readcount).ToLocalChecked();
             buffer = NULL;    // `d` has now taken ownership of the memory
         } else {
+            free(buffer);
             d = Nan::Null();
         }
         
