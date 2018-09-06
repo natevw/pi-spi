@@ -45,7 +45,9 @@ class SpiTransfer : public Nan::AsyncWorker {
           //printf("fd: %i, speed: %u, mode: %i, order: %i\n", fd, speed, mode, order);
           //printf("writelen: %u, readcount: %u, buflen=%u\n", (uint32_t)writelen, readcount, buflen);
       }
-      ~SpiTransfer() {}
+      ~SpiTransfer() {
+        if (buffer) free(buffer);
+      }
       
       void Execute () {
           // see https://raw.github.com/torvalds/linux/master/Documentation/spi/spidev_test.c
@@ -101,6 +103,7 @@ class SpiTransfer : public Nan::AsyncWorker {
         Local<Value> d;
         if (!err && readcount) {
             d = Nan::NewBuffer((char*)buffer, readcount).ToLocalChecked();
+            buffer = NULL;    // `d` has now taken ownership of the memory
         } else {
             d = Nan::Null();
         }
