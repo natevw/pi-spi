@@ -1,7 +1,7 @@
 var SPI = require("./index");
 
-var spi = SPI.initialize("/dev/spidev0.0"),
-    test = Buffer("Hello, World!");
+var spi = SPI.initialize(process.argv[2] || "/dev/spidev0.0"),
+    test = Buffer.from("Hello, World!");
 spi.transfer(test, test.length, function (e,d) {
     if (e) {
         console.error(e);
