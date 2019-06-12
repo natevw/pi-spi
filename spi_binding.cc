@@ -16,19 +16,17 @@
 #endif
 
 
-using namespace v8;
-
 uv_mutex_t spiAccess;
 
 class SpiTransfer : public Nan::AsyncWorker {
   public:
-      SpiTransfer(Nan::Callback *cb, int fd, uint32_t speed, uint8_t mode, uint8_t order, v8::Handle<v8::Value> _writebuf, size_t readcount) :
-        Nan::AsyncWorker(cb), fd(fd), speed(speed), mode(mode), order(order), readcount(readcount)
+      SpiTransfer(Nan::Callback *cb, int fd, uint32_t speed, uint8_t mode, uint8_t order, v8::Local<v8::Value> _writebuf, size_t readcount) :
+        Nan::AsyncWorker(cb, "pi-spi:transfer"), fd(fd), speed(speed), mode(mode), order(order), readcount(readcount)
       {
           size_t writelen;
           char* writedata;
           if (_writebuf->IsObject()) {
-              Local<Object> writebuf = _writebuf->ToObject();
+              v8::Local<v8::Object> writebuf =  Nan::To<v8::Object>(_writebuf).ToLocalChecked();
               writelen = node::Buffer::Length(writebuf);
               assert(writelen <= 0xffffffff /*std::numeric_limits<T>::max()*/);
               writedata = node::Buffer::Data(writebuf);
@@ -91,7 +89,7 @@ class SpiTransfer : public Nan::AsyncWorker {
     void HandleOKCallback () {
         Nan::HandleScope();
         
-        Local<Value> e;
+        v8::Local<v8::Value> e;
         if (err) {
             char msg[1024];
             snprintf(msg, sizeof(msg), "SPI error: %s (errno %i)", strerror(err), err);
@@ -100,7 +98,7 @@ class SpiTransfer : public Nan::AsyncWorker {
             e = Nan::Null();
         }
         
-        Local<Value> d;
+        v8::Local<v8::Value> d;
         if (!err && readcount) {
             d = Nan::NewBuffer((char*)buffer, readcount).ToLocalChecked();
             buffer = NULL;    // `d` has now taken ownership of the memory
@@ -110,11 +108,11 @@ class SpiTransfer : public Nan::AsyncWorker {
         
         Nan::TryCatch try_catch;
         if (0 && err) {     // NOTE: since `d` is always initialized, we can always use `else` branch…
-            Local<Value> v[] = {e};
-            callback->Call(1, v);
+            v8::Local<v8::Value> v[] = {e};
+            callback->Call(1, v, async_resource);
         } else {
-            Local<Value> v[] = {e,d};
-            callback->Call(2, v);
+            v8::Local<v8::Value> v[] = {e,d};
+            callback->Call(2, v, async_resource);
         }
         
         if (try_catch.HasCaught()) {
@@ -145,13 +143,13 @@ NAN_METHOD(Transfer) {
     assert(info[5]->IsNumber());
     assert(info[6]->IsFunction());
     
-    int fd = info[0]->Int32Value();
-    uint32_t speed = info[1]->Uint32Value();
-    uint8_t mode = info[2]->Uint32Value();
-    uint8_t order = info[3]->Uint32Value();
-    v8::Handle<v8::Value> writebuf = info[4];
-    size_t readcount = info[5]->Uint32Value();
-    Nan::Callback* cb = new Nan::Callback(info[6].As<Function>());
+    int fd = Nan::To<int32_t>(info[0]).FromJust();
+    uint32_t speed = Nan::To<uint32_t>(info[1]).FromJust();
+    uint8_t mode = Nan::To<uint32_t>(info[2]).FromJust();
+    uint8_t order = Nan::To<uint32_t>(info[3]).FromJust();
+    v8::Local<v8::Value> writebuf = info[4];
+    size_t readcount = Nan::To<uint32_t>(info[4]).FromJust();
+    Nan::Callback* cb = new Nan::Callback(info[6].As<v8::Function>());
     
     Nan::AsyncQueueWorker(new SpiTransfer(cb, fd, speed, mode, order, writebuf, readcount));
 }
