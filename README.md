@@ -65,6 +65,10 @@ Writes outbuffer, ignoring response bytes.
 
 Note that if there was an error opening the device, the `transfer`/`read`/`write` calls will fail each time called. I may [revise the initialize method](https://github.com/natevw/pi-spi/issues/2#issuecomment-27588982) so to allow you to handle the error better.
 
+### spi.close(cb)
+
+Frees up the underlying device descriptor if you are no longer using this instance. You will need to `SPI.initialize` a new instance if you wish to resume communication later.
+
 
 ## License
 
