@@ -58,8 +58,8 @@ exports.initialize = function (dev) {
         if (typeof cb !== 'function') throw TypeError("Callback not provided");
         _transfer(writebuf, readcount, cb);
     };
-    spi.close = function () {
-        fs.close(_fd);
+    spi.close = function (cb) {
+        fs.close(_fd, cb);
     };
     
     return spi;
