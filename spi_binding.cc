@@ -109,7 +109,7 @@ class SpiTransfer : public Nan::AsyncWorker {
         }
         
         Nan::TryCatch try_catch;
-        if (0 && err) {
+        if (0 && err) {     // NOTE: since `d` is always initialized, we can always use `else` branch…
             Local<Value> v[] = {e};
             callback->Call(1, v);
         } else {
