@@ -73,7 +73,7 @@ Frees up the underlying device descriptor if you are no longer using this instan
 
 ## License
 
-Copyright © 2013, Nathan Vander Wilt.
+Copyright © 2013–2019, Nathan Vander Wilt.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
