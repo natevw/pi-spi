@@ -15,6 +15,7 @@ var spi = SPI.initialize("/dev/spidev0.0"),
     test = Buffer.from("Hello, World!");
 
 // reads and writes simultaneously
+// e.g. jumper MOSI [BCM 10, physical pin 19] to MISO [BCM 9, physical pin 21]
 spi.transfer(test, test.length, function (e,d) {
     if (e) console.error(e);
     else console.log("Got \""+d.toString()+"\" back.");
