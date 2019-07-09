@@ -148,7 +148,7 @@ NAN_METHOD(Transfer) {
     uint8_t mode = Nan::To<uint32_t>(info[2]).FromJust();
     uint8_t order = Nan::To<uint32_t>(info[3]).FromJust();
     v8::Local<v8::Value> writebuf = info[4];
-    size_t readcount = Nan::To<uint32_t>(info[4]).FromJust();
+    size_t readcount = Nan::To<uint32_t>(info[5]).FromJust();
     Nan::Callback* cb = new Nan::Callback(info[6].As<v8::Function>());
     
     Nan::AsyncQueueWorker(new SpiTransfer(cb, fd, speed, mode, order, writebuf, readcount));
